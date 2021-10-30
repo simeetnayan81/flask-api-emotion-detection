@@ -1,4 +1,3 @@
-tensorflow
 keras
 scikit-learn
 flask
