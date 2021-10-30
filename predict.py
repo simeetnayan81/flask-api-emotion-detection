@@ -6,8 +6,6 @@ import nltk
 import re
 from keras.models import load_model
 # plots and metrics
-import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 # preparing input to our model
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
@@ -35,7 +33,6 @@ def pred(message):
     return result
 
 
-print(pred('I am very happy today'))
 
 if __name__=="__main__":
     app.run(debug=True)
