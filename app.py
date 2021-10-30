@@ -2,7 +2,6 @@
 import numpy as np
 import pickle
 # text preprocessing
-import nltk
 import re
 from keras.models import load_model
 # plots and metrics

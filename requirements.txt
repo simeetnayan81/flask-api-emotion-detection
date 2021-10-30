@@ -1,4 +1,3 @@
-nltk
 tensorflow
 keras
 scikit-learn
