@@ -1,3 +1,7 @@
+<<<<<<< HEAD:predict.py
+=======
+
+>>>>>>> 3a0201d3bdecfc88327f7ffef82daae767373afb:app.py
 import numpy as np
 import pickle
 # text preprocessing
