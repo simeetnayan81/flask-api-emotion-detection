@@ -13,7 +13,7 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-@app.route("/pred/<string:message>")
+@app.route("/pred/<string:message>", methods=['GET', 'POST'])
 
 def pred(message):
     class_names = ['joy', 'fear', 'anger', 'sadness', 'neutral']
