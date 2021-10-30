@@ -1,3 +1,6 @@
 nltk
+tensorflow
 keras
+scikit-learn
 flask
+numpy
