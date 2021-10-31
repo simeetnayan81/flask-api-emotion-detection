@@ -6,8 +6,10 @@ from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 import re
 import pretoken
+#Following two lines fixed attribute error in heroku due to the function preprocess_and_tokenize, this function is seperately in pretoken.py for clearity
 import __main__
 __main__.preprocess_and_tokenize = pretoken.preprocess_and_tokenize
+
 
 app = Flask(__name__)
 
