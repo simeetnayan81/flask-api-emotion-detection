@@ -12,6 +12,30 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def pred():
+    def preprocess_and_tokenize(data):
+        data = re.sub("(<.*?>)", "", data)
+
+    #remove urls
+        data = re.sub(r'http\S+', '', data)
+
+    #remove hashtags and @names
+        data= re.sub(r"(#[\d\w\.]+)", '', data)
+        data= re.sub(r"(@[\d\w\.]+)", '', data)
+
+    #remove punctuation and non-ascii digits
+        data = re.sub("(\\W|\\d)", " ", data)
+
+    #remove whitespace
+        data = data.strip()
+
+    # tokenization with nltk
+        data = word_tokenize(data)
+
+    # stemming with nltk
+        porter = PorterStemmer()
+        stem_data = [porter.stem(word) for word in data]
+
+        return stem_data
     message= request.args.get("message", None)
     filename = 'tfidf_svm.sav'
     model = pickle.load(open(filename, 'rb'))
@@ -26,34 +50,33 @@ def pred():
         jsonify(result)
     return result
 
-def preprocess_and_tokenize(data):
-    data = re.sub("(<.*?>)", "", data)
-
-    #remove urls
-    data = re.sub(r'http\S+', '', data)
-
-    #remove hashtags and @names
-    data= re.sub(r"(#[\d\w\.]+)", '', data)
-    data= re.sub(r"(@[\d\w\.]+)", '', data)
-
-    #remove punctuation and non-ascii digits
-    data = re.sub("(\\W|\\d)", " ", data)
-
-    #remove whitespace
-    data = data.strip()
-
-    # tokenization with nltk
-    data = word_tokenize(data)
-
-    # stemming with nltk
-    porter = PorterStemmer()
-    stem_data = [porter.stem(word) for word in data]
-
-    return stem_data
-
 
 
 
 
 if __name__=="__main__":
+    def preprocess_and_tokenize(data):
+        data = re.sub("(<.*?>)", "", data)
+
+    #remove urls
+        data = re.sub(r'http\S+', '', data)
+
+    #remove hashtags and @names
+        data= re.sub(r"(#[\d\w\.]+)", '', data)
+        data= re.sub(r"(@[\d\w\.]+)", '', data)
+
+    #remove punctuation and non-ascii digits
+        data = re.sub("(\\W|\\d)", " ", data)
+
+    #remove whitespace
+        data = data.strip()
+
+    # tokenization with nltk
+        data = word_tokenize(data)
+
+    # stemming with nltk
+        porter = PorterStemmer()
+        stem_data = [porter.stem(word) for word in data]
+
+        return stem_data
     app.run()
