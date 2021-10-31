@@ -6,13 +6,19 @@ from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 import re
 import pretoken
+import __main__
+__main__.preprocess_and_tokenize = pretoken.preprocess_and_tokenize
 
 app = Flask(__name__)
+
 
 @app.route("/", methods=['GET', 'POST'])
 def pred():
     message= request.args.get("message", None)
-    emo=pretoken.mymod(message)
+    filename = 'tfidf_svm.sav'
+    model = pickle.load(open(filename, 'rb'))
+    data=[message]
+    emo = model.predict(data)
     result= {
         "message": message,
         "emotion": emo[0]
@@ -21,9 +27,5 @@ def pred():
         jsonify(result)
     return result
 
-
-
-
 if __name__=="__main__":
-    from pretoken import preprocess_and_tokenize, mymod
-    app.run()
+    app.run(debug=True)
