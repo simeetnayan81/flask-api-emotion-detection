@@ -1,6 +1,6 @@
 
 import pickle
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from nltk import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
@@ -35,8 +35,9 @@ def preprocess_and_tokenize(data):
 
 app = Flask(__name__)
 
-@app.route("/pred/<string:message>", methods=['GET', 'POST'])
-def pred(message):
+@app.route("/", methods=['GET', 'POST'])
+def pred():
+    message= request.args.get("message", None)
     filename = 'tfidf_svm.sav'
     model = pickle.load(open(filename, 'rb'))
     #message = 'delivery was hour late and my pizza is cold!'
