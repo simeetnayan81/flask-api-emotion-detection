@@ -10,6 +10,22 @@ import re
 
 app = Flask(__name__)
 
+@app.route("/", methods=['GET', 'POST'])
+def pred():
+    message= request.args.get("message", None)
+    filename = 'tfidf_svm.sav'
+    model = pickle.load(open(filename, 'rb'))
+    #message = 'delivery was hour late and my pizza is cold!'
+    data=[message]
+    pred = model.predict(data)
+    result= {
+        "message": message,
+        "emotion": pred[0]
+        }
+    with app.app_context():
+        jsonify(result)
+    return result
+
 def preprocess_and_tokenize(data):
     data = re.sub("(<.*?>)", "", data)
 
@@ -35,23 +51,6 @@ def preprocess_and_tokenize(data):
 
     return stem_data
 
-
-
-@app.route("/", methods=['GET', 'POST'])
-def pred():
-    message= request.args.get("message", None)
-    filename = 'tfidf_svm.sav'
-    model = pickle.load(open(filename, 'rb'))
-    #message = 'delivery was hour late and my pizza is cold!'
-    data=[message]
-    pred = model.predict(data)
-    result= {
-        "message": message,
-        "emotion": pred[0]
-        }
-    with app.app_context():
-        jsonify(result)
-    return result
 
 
 
