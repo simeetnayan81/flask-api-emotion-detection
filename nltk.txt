@@ -1,4 +1,3 @@
 punkt
-word_tokenize
 PorterStemmer
 stopwords
