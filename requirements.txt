@@ -1,3 +1,5 @@
 nltk
+pickle
+re
 scikit-learn
 flask
