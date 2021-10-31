@@ -1,38 +1,58 @@
 
-import numpy as np
 import pickle
-# text preprocessing
-import re
-from keras.models import load_model
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
-# preparing input to our model
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-
 from flask import Flask, jsonify
+from nltk import word_tokenize
+from nltk.stem import PorterStemmer
+from nltk.corpus import stopwords
+import re
+
+def preprocess_and_tokenize(data):
+    data = re.sub("(<.*?>)", "", data)
+
+    #remove urls
+    data = re.sub(r'http\S+', '', data)
+
+    #remove hashtags and @names
+    data= re.sub(r"(#[\d\w\.]+)", '', data)
+    data= re.sub(r"(@[\d\w\.]+)", '', data)
+
+    #remove punctuation and non-ascii digits
+    data = re.sub("(\\W|\\d)", " ", data)
+
+    #remove whitespace
+    data = data.strip()
+
+    # tokenization with nltk
+    data = word_tokenize(data)
+
+    # stemming with nltk
+    porter = PorterStemmer()
+    stem_data = [porter.stem(word) for word in data]
+
+    return stem_data
+
+
 
 app = Flask(__name__)
 
 @app.route("/pred/<string:message>", methods=['GET', 'POST'])
-
 def pred(message):
-    class_names = ['joy', 'fear', 'anger', 'sadness', 'neutral']
-    tokenizer=None
-    with open('tokenizer.pickle', 'rb') as handle:
-        tokenizer = pickle.load(handle)
-
-    model = load_model('cnn_w2v.h5')
-    seq = tokenizer.texts_to_sequences([message])
-    padded = pad_sequences(seq, maxlen=500)
-    pred = model.predict(padded)
+    filename = 'tfidf_svm.sav'
+    model = pickle.load(open(filename, 'rb'))
+    #message = 'delivery was hour late and my pizza is cold!'
+    data=[message]
+    pred = model.predict(data)
     result= {
         "message": message,
-        "emotion": class_names[np.argmax(pred)]
+        "emotion": pred[0]
         }
+    with app.app_context():
+        jsonify(result)
     return result
 
 
-print(pred('I am very happy today'))
+
+
 
 if __name__=="__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)
